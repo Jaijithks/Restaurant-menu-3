@@ -12,12 +12,18 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
   useEffect(() => {
     const totalFrames = 120;
-    const paths: string[] = ["/background_hero.jpeg"];
+    
+    // Detect mobile screen on load (using 768px breakpoint)
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    const sequenceFolder = isMobile ? "sequence 2" : "sequence";
+    const heroImage = isMobile ? "/backgroun_hero_2.webp" : "/background_hero.jpeg";
+    
+    const paths: string[] = [heroImage];
     
     // Generate sequence paths: 000.webp to 119.webp
     for (let i = 0; i < totalFrames; i++) {
       const paddedNum = String(i).padStart(3, "0");
-      paths.push(`/sequence/${paddedNum}.webp`);
+      paths.push(`/${sequenceFolder}/${paddedNum}.webp`);
     }
 
     let loadedCount = 0;
@@ -36,7 +42,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
           // Sort images based on name order to ensure correct frame indexing
           const sorted = preloadedImages.sort((a, b) => {
             const getIndex = (url: string) => {
-              if (url.includes("background_hero")) return -1;
+              if (url.includes("background_hero") || url.includes("backgroun_hero")) return -1;
               const match = url.match(/\/(\d+)\.webp/);
               return match ? parseInt(match[1]) : 999;
             };
