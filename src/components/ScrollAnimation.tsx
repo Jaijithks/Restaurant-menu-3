@@ -19,7 +19,8 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
     ctx: CanvasRenderingContext2D,
     img: HTMLImageElement,
     canvasWidth: number,
-    canvasHeight: number
+    canvasHeight: number,
+    clear: boolean = true
   ) => {
     if (!img) return;
     
@@ -39,7 +40,9 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
     const sourceX = (imageWidth - sourceWidth) * 0.5;
     const sourceY = (imageHeight - sourceHeight) * 0.5;
     
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    if (clear) {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    }
     ctx.drawImage(
       img,
       sourceX,
@@ -76,17 +79,7 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
       // Re-draw current frame
       const container = containerRef.current;
       if (container) {
-        const rect = container.getBoundingClientRect();
-        const scrollDistance = container.offsetHeight - window.innerHeight;
-        const currentProgress = Math.max(0, Math.min(1, -rect.top / (scrollDistance || 1)));
-        
-        let frameIndex = 0;
-        if (currentProgress > 0.15) {
-          const animProgress = (currentProgress - 0.15) / 0.85;
-          frameIndex = Math.min(images.length - 1, Math.floor(animProgress * images.length));
-        }
-        
-        drawImageCover(ctx, images[frameIndex], width, height);
+        // force redraw on next frame
       }
     };
 
@@ -95,6 +88,33 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
     handleResize();
 
     let animationFrameId: number;
+    let targetScrollProgress = 0;
+    let currentRenderProgress = 0;
+    let lastDrawnIndex = -1;
+
+    const renderLoop = () => {
+      // Smoothly interpolate the rendering progress towards the actual scroll target
+      currentRenderProgress += (targetScrollProgress - currentRenderProgress) * 0.08;
+
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      let frameIndex = 0;
+      if (currentRenderProgress > 0.15) {
+        const animProgress = (currentRenderProgress - 0.15) / 0.85;
+        const exactIndex = animProgress * (images.length - 1);
+        // Snap to nearest frame to avoid "trippy" ghosting
+        frameIndex = Math.min(images.length - 1, Math.max(0, Math.round(exactIndex)));
+      }
+
+      // Only draw if the frame actually changed (huge performance boost when resting)
+      if (frameIndex !== lastDrawnIndex) {
+        drawImageCover(ctx, images[frameIndex], width, height, true);
+        lastDrawnIndex = frameIndex;
+      }
+
+      animationFrameId = requestAnimationFrame(renderLoop);
+    };
 
     const handleScroll = () => {
       const container = containerRef.current;
@@ -102,35 +122,21 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
 
       const rect = container.getBoundingClientRect();
       const scrollDistance = container.offsetHeight - window.innerHeight;
-      const currentProgress = Math.max(0, Math.min(1, -rect.top / (scrollDistance || 1)));
+      targetScrollProgress = Math.max(0, Math.min(1, -rect.top / (scrollDistance || 1)));
       
-      setScrollProgress(currentProgress);
+      setScrollProgress(targetScrollProgress);
 
       // Hero overlay opacity: starts at 1, goes to 0 by 15% scroll
-      const currentHeroOpacity = Math.max(0, 1 - currentProgress / 0.15);
+      const currentHeroOpacity = Math.max(0, 1 - targetScrollProgress / 0.15);
       setHeroOpacity(currentHeroOpacity);
-
-      // Frame Index: stays on frame 0 during the first 15% scroll, then plays from 0 to 119
-      let frameIndex = 0;
-      if (currentProgress > 0.15) {
-        const animProgress = (currentProgress - 0.15) / 0.85;
-        frameIndex = Math.min(images.length - 1, Math.floor(animProgress * images.length));
-      }
-
-      // Draw the computed frame
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      
-      cancelAnimationFrame(animationFrameId);
-      animationFrameId = requestAnimationFrame(() => {
-        drawImageCover(ctx, images[frameIndex], width, height);
-      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     
-    // Initial draw
+    // Initial calls
     handleScroll();
+    currentRenderProgress = targetScrollProgress; // snap immediately on load
+    animationFrameId = requestAnimationFrame(renderLoop);
 
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -159,8 +165,8 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
               <span className="font-sans text-[10px] tracking-[0.4em] text-gold uppercase sm:text-xs">
                 Welcome to
               </span>
-              <h1 className="mt-4 font-serif text-5xl font-extralight tracking-[0.2em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] md:text-7xl">
-                OCHRE & EMBER
+              <h1 className="mt-4 font-serif text-[52px] font-extralight tracking-[0.2em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] md:text-[76px]">
+                Ochre & Ember
               </h1>
               <p className="mt-6 max-w-sm font-sans text-xs tracking-widest text-zinc-300 uppercase sm:text-sm">
                 Authentic Yemeni Mandi & Premium Grills

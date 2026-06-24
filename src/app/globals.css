@@ -1,5 +1,29 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "MyCinzelFont";
+  src: url("/fonts/CinzeldecorativeRegular-qmzq.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "MyCinzelFont";
+  src: url("/fonts/CinzelDecorativeBold-AEBg.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "MyCinzelFont";
+  src: url("/fonts/CinzelDecorativeBlack-DE93.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #fbf9f4; /* Warm off-white/cream background matching the frame 119 */
   --foreground: #1c1c1c; /* Charcoal slate for text */
@@ -9,8 +33,8 @@
   --card-bg: #ffffff;
   --card-border: rgba(189, 162, 126, 0.15);
   
-  --font-serif: var(--font-cormorant);
-  --font-sans: var(--font-inter);
+  --font-serif: "MyCinzelFont", serif;
+  --font-sans: var(--font-alice);
 }
 
 @theme inline {
@@ -21,8 +45,9 @@
   --color-gold-light: var(--gold-light);
   --color-card-bg: var(--card-bg);
   --color-card-border: var(--card-border);
-  --font-serif: var(--font-serif);
-  --font-sans: var(--font-sans);
+  --font-serif: "MyCinzelFont", serif;
+  --font-sans: var(--font-alice);
+  --font-cinzel: "MyCinzelFont", serif;
 }
 
 html, body {
@@ -42,6 +67,10 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif), serif;
   letter-spacing: 0.03em;
+}
+
+.font-cinzel {
+  font-family: "MyCinzelFont", serif !important;
 }
 
 /* Premium micro-scrollbar */
