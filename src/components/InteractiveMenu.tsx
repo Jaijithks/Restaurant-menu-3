@@ -131,7 +131,7 @@ export default function InteractiveMenu() {
         {/* Title Block */}
         <div className="flex flex-col items-center text-center">
           <h2
-            className="font-serif text-4xl font-bold tracking-[0.04em] text-[#1a1a1a] sm:text-5xl"
+            className="font-serif text-4xl font-semibold tracking-[0.04em] text-[#1a1a1a] sm:text-5xl"
             style={{ fontVariant: 'small-caps' }}
           >
             Our Exquisite Menu
@@ -197,7 +197,7 @@ export default function InteractiveMenu() {
                 {/* Row 1: Title (left) & Rating/Tag (right) */}
                 <div className="flex items-center justify-between">
                   <h3
-                    className="font-serif text-[18px] font-bold tracking-wide text-[#1a1a1a] sm:text-[20px]"
+                    className="font-serif text-[18px] font-semibold tracking-wide text-[#1a1a1a] sm:text-[20px]"
                     style={{ fontVariant: 'small-caps' }}
                   >
                     {item.name}
