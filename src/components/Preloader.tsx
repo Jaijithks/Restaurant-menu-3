@@ -14,16 +14,18 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   useEffect(() => {
     const totalFrames = 120;
     
-    // Detect mobile screen on load (using 768px breakpoint)
-    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-    const sequenceFolder = isMobile ? "sequence 2" : "sequence";
+    // Detect mobile/tablet screen on load (using 1024px breakpoint)
+    const isMobile = typeof window !== "undefined" && window.innerWidth <= 1024;
+    const sequenceFolder = isMobile ? encodeURIComponent("sequence 2") : "sequence";
     const heroImage = isMobile ? "/backgroun_hero_2.webp" : "/background_hero.jpeg";
     
     const paths: string[] = [heroImage];
     
-    // Generate sequence paths: 000.webp to 119.webp
-    for (let i = 0; i < totalFrames; i++) {
-      const paddedNum = String(i).padStart(3, "0");
+    // Generate sequence paths: skip alternate frames (load 50%)
+    for (let i = 0; i < totalFrames; i += 2) {
+      const frameIndex = i;
+      if (frameIndex >= totalFrames) break;
+      const paddedNum = String(frameIndex).padStart(3, "0");
       paths.push(`/${sequenceFolder}/${paddedNum}.webp`);
     }
 
@@ -97,7 +99,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       <div className="relative flex flex-col items-center gap-8">
         {/* Title logo */}
         <div className="flex flex-col items-center text-center">
-          <h1 className="font-serif text-3xl font-extralight tracking-[0.25em] text-gold sm:text-4xl animate-pulse">
+          <h1 className="font-serif text-[34px] font-extralight tracking-[0.25em] text-gold sm:text-[40px] animate-pulse">
             OCHRE & EMBER
           </h1>
           <p className="mt-2 font-sans text-[10px] tracking-[0.4em] text-gold/60 uppercase">

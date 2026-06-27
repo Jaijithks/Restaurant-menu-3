@@ -15,17 +15,47 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showMenu, setShowMenu] = useState(false);
 
-  const bitmapsRef = useRef<ImageBitmap[]>([]);
-  const frameIndexRef = useRef(0);
-  const rafRef = useRef<number>(0);
-  const lastFrameRef = useRef(-1);
-  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
-
-  useEffect(() => {
-    bitmapsRef.current = images;
-    lastFrameRef.current = -1;
-    return () => {};
-  }, [images]);
+  // Center and draw image on canvas matching CSS "object-fit: cover"
+  const drawImageCover = (
+    ctx: CanvasRenderingContext2D,
+    img: HTMLImageElement,
+    canvasWidth: number,
+    canvasHeight: number,
+    clear: boolean = true
+  ) => {
+    if (!img) return;
+    
+    const imageWidth = img.width;
+    const imageHeight = img.height;
+    
+    const ratio = Math.min(canvasWidth / imageWidth, canvasHeight / imageHeight);
+    let newWidth = imageWidth * ratio;
+    let newHeight = imageHeight * ratio;
+    
+    if (newWidth < canvasWidth) newWidth = canvasWidth;
+    if (newHeight < canvasHeight) newHeight = canvasHeight;
+    
+    const sourceWidth = imageWidth / (newWidth / canvasWidth);
+    const sourceHeight = imageHeight / (newHeight / canvasHeight);
+    
+    const sourceX = (imageWidth - sourceWidth) * 0.5;
+    const sourceY = (imageHeight - sourceHeight) * 0.5;
+    
+    if (clear) {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    }
+    ctx.drawImage(
+      img,
+      sourceX,
+      sourceY,
+      sourceWidth,
+      sourceHeight,
+      0,
+      0,
+      canvasWidth,
+      canvasHeight
+    );
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -51,24 +81,23 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
       }
     };
 
-    setup();
-
-    const loop = () => {
-      const bitmaps = bitmapsRef.current;
-      const idx = frameIndexRef.current;
-      if (bitmaps.length > 0 && idx !== lastFrameRef.current) {
-        lastFrameRef.current = idx;
-        const bm = bitmaps[Math.min(idx, bitmaps.length - 1)];
-        if (bm) {
-          const w = window.innerWidth;
-          const h = window.innerHeight;
-          const scale = Math.max(w / bm.width, h / bm.height);
-          const sw = w / scale;
-          const sh = h / scale;
-          const sx = (bm.width - sw) * 0.5;
-          const sy = (bm.height - sh) * 0.5;
-          ctx.drawImage(bm, sx, sy, sw, sh, 0, 0, w, h);
-        }
+    // Handle high DPI screens
+    const handleResize = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const pixelRatio = window.devicePixelRatio || 1;
+      
+      canvas.width = width * pixelRatio;
+      canvas.height = height * pixelRatio;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      
+      ctx.scale(pixelRatio, pixelRatio);
+      
+      // Re-draw current frame
+      const container = containerRef.current;
+      if (container) {
+        // force redraw on next frame
       }
       rafRef.current = requestAnimationFrame(loop);
     };
@@ -76,28 +105,56 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
     rafRef.current = requestAnimationFrame(loop);
     window.addEventListener('resize', setup);
 
-    return () => {
-      window.removeEventListener('resize', setup);
-      cancelAnimationFrame(rafRef.current);
+    let animationFrameId: number;
+    let targetScrollProgress = 0;
+    let currentRenderProgress = 0;
+    let lastDrawnIndex = -1;
+
+    const renderLoop = () => {
+      // Smoothly interpolate the rendering progress towards the actual scroll target
+      currentRenderProgress += (targetScrollProgress - currentRenderProgress) * 0.08;
+
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      let frameIndex = 0;
+      if (currentRenderProgress > 0.15) {
+        const animProgress = (currentRenderProgress - 0.15) / 0.85;
+        const exactIndex = animProgress * (images.length - 1);
+        // Snap to nearest frame to avoid "trippy" ghosting
+        frameIndex = Math.min(images.length - 1, Math.max(0, Math.round(exactIndex)));
+      }
+
+      // Only draw if the frame actually changed (huge performance boost when resting)
+      if (frameIndex !== lastDrawnIndex) {
+        drawImageCover(ctx, images[frameIndex], width, height, true);
+        lastDrawnIndex = frameIndex;
+      }
+
+      animationFrameId = requestAnimationFrame(renderLoop);
     };
-  }, []);
 
   useEffect(() => {
     const onScroll = () => {
       const container = containerRef.current;
       if (!container) return;
       const rect = container.getBoundingClientRect();
-      const dist = container.offsetHeight - window.innerHeight;
-      const progress = Math.max(0, Math.min(1, -rect.top / (dist || 1)));
+      const scrollDistance = container.offsetHeight - window.innerHeight;
+      targetScrollProgress = Math.max(0, Math.min(1, -rect.top / (scrollDistance || 1)));
+      
+      setScrollProgress(targetScrollProgress);
 
-      const opacity = Math.max(0, 1 - progress / 0.15);
+      // Hero overlay opacity: starts at 1, goes to 0 by 15% scroll
+      const currentHeroOpacity = Math.max(0, 1 - targetScrollProgress / 0.15);
+      setHeroOpacity(currentHeroOpacity);
+    };
 
-      let idx = 1; // index 0 is the hero image, sequence starts at 1
-      if (progress > 0.15) {
-        const ap = (progress - 0.15) / 0.85;
-        const total = Math.max(1, bitmapsRef.current.length - 1); // exclude hero
-        idx = 1 + Math.min(total - 1, Math.floor(ap * total));
-      }
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    
+    // Initial calls
+    handleScroll();
+    currentRenderProgress = targetScrollProgress; // snap immediately on load
+    animationFrameId = requestAnimationFrame(renderLoop);
 
       frameIndexRef.current = idx;
       setScrollProgress(progress);
@@ -125,8 +182,8 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
               <span className="font-sans text-[10px] tracking-[0.4em] text-gold uppercase sm:text-xs">
                 Welcome to
               </span>
-              <h1 className="mt-4 font-serif text-5xl font-extralight tracking-[0.2em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] md:text-7xl">
-                OCHRE &amp; EMBER
+              <h1 className="mt-4 font-serif text-[52px] font-extralight tracking-[0.2em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] md:text-[76px]">
+                Ochre & Ember
               </h1>
               <p className="mt-6 max-w-sm font-sans text-xs tracking-widest text-zinc-300 uppercase sm:text-sm">
                 Authentic Yemeni Mandi &amp; Premium Grills
