@@ -172,8 +172,8 @@ export default function InteractiveMenu() {
                   onClick={() => setSelectedCategory(cat)}
                   className={`shrink-0 rounded-full px-7 py-3 font-sans text-sm sm:text-base font-bold tracking-wide transition-all duration-150 border border-[#dbe1e3] ${
                     isActive
-                      ? "bg-[#3cdbc9] text-zinc-950 shadow-[0_0_15px_rgba(60,219,201,0.6)] border-[#3cdbc9]"
-                      : "bg-[#eef2f3] text-zinc-800 hover:bg-zinc-200/50"
+                      ? "bg-[#1a1a1a] text-white border-[#1a1a1a] shadow-md"
+                      : "bg-white/60 text-[#3a3a3a] border-[#c8d0d8] hover:bg-white/90"
                   }`}
                 >
                   {cat}

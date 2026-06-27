@@ -5,7 +5,7 @@ import InteractiveMenu from "./InteractiveMenu";
 import ContactSection from "./ContactSection";
 
 interface ScrollAnimationProps {
-  images: HTMLImageElement[];
+  images: ImageBitmap[];
 }
 
 export default function ScrollAnimation({ images }: ScrollAnimationProps) {
@@ -13,6 +13,7 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [heroOpacity, setHeroOpacity] = useState(1);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [showMenu, setShowMenu] = useState(false);
 
   // Center and draw image on canvas matching CSS "object-fit: cover"
   const drawImageCover = (
@@ -58,10 +59,27 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !images.length) return;
+    if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
+    ctxRef.current = ctx;
+
+    const setup = () => {
+      const pr = window.devicePixelRatio || 1;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const newW = Math.round(w * pr);
+      const newH = Math.round(h * pr);
+      if (canvas.width !== newW || canvas.height !== newH) {
+        canvas.width = newW;
+        canvas.height = newH;
+        canvas.style.width = `${w}px`;
+        canvas.style.height = `${h}px`;
+        ctx.setTransform(pr, 0, 0, pr, 0, 0);
+        lastFrameRef.current = -1;
+      }
+    };
 
     // Handle high DPI screens
     const handleResize = () => {
@@ -81,11 +99,11 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
       if (container) {
         // force redraw on next frame
       }
+      rafRef.current = requestAnimationFrame(loop);
     };
 
-    window.addEventListener("resize", handleResize);
-    // Initialize sizing
-    handleResize();
+    rafRef.current = requestAnimationFrame(loop);
+    window.addEventListener('resize', setup);
 
     let animationFrameId: number;
     let targetScrollProgress = 0;
@@ -116,10 +134,10 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
       animationFrameId = requestAnimationFrame(renderLoop);
     };
 
-    const handleScroll = () => {
+  useEffect(() => {
+    const onScroll = () => {
       const container = containerRef.current;
       if (!container) return;
-
       const rect = container.getBoundingClientRect();
       const scrollDistance = container.offsetHeight - window.innerHeight;
       targetScrollProgress = Math.max(0, Math.min(1, -rect.top / (scrollDistance || 1)));
@@ -138,29 +156,28 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
     currentRenderProgress = targetScrollProgress; // snap immediately on load
     animationFrameId = requestAnimationFrame(renderLoop);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("scroll", handleScroll);
-      cancelAnimationFrame(animationFrameId);
+      frameIndexRef.current = idx;
+      setScrollProgress(progress);
+      setHeroOpacity(opacity);
+      setShowMenu(progress >= 0.99);
     };
-  }, [images]);
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
     <div ref={containerRef} className="relative h-[350vh] w-full bg-black">
-      {/* Sticky Canvas Container */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <canvas ref={canvasRef} className="block h-full w-full object-cover" />
+        <canvas ref={canvasRef} className="block h-full w-full" />
 
-        {/* Hero Welcome Text Overlay (Fades out on scroll) */}
         {heroOpacity > 0 && (
           <div
             style={{ opacity: heroOpacity }}
-            className="absolute inset-0 flex flex-col items-center justify-between bg-black/35 py-20 px-6 text-center transition-opacity duration-75 ease-out pointer-events-none"
+            className="absolute inset-0 flex flex-col items-center justify-between bg-black/35 py-20 px-6 text-center pointer-events-none"
           >
-            {/* Top Empty Space to Balance Layout */}
             <div />
-
-            {/* Center Restaurant Info */}
             <div className="flex flex-col items-center select-none">
               <span className="font-sans text-[10px] tracking-[0.4em] text-gold uppercase sm:text-xs">
                 Welcome to
@@ -169,12 +186,10 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
                 Ochre & Ember
               </h1>
               <p className="mt-6 max-w-sm font-sans text-xs tracking-widest text-zinc-300 uppercase sm:text-sm">
-                Authentic Yemeni Mandi & Premium Grills
+                Authentic Yemeni Mandi &amp; Premium Grills
               </p>
               <div className="mt-8 h-[1px] w-20 bg-gold" />
             </div>
-
-            {/* Bottom Scroll Prompt */}
             <div className="flex flex-col items-center gap-2 select-none">
               <span className="font-sans text-[9px] tracking-[0.3em] text-gold/80 uppercase">
                 Scroll to Begin
@@ -184,16 +199,14 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
           </div>
         )}
 
-        {/* Subtle Scroll Progress Indicator (Gold line on top of screen) */}
-        <div 
-          className="absolute top-0 left-0 h-[3px] bg-gold transition-all duration-100" 
-          style={{ width: `${scrollProgress * 100}%` }}
+        <div
+          className="absolute top-0 left-0 h-[3px] bg-gold"
+          style={{ width: `${scrollProgress * 100}%`, transition: 'width 80ms linear' }}
         />
 
-        {/* Functional Menu overlay shown instantly at the end frame */}
         <div
-          className="absolute inset-0 z-30 h-screen w-full overflow-y-auto bg-[#f5f8f9]"
-          style={{ display: scrollProgress >= 0.99 ? "block" : "none" }}
+          className="absolute inset-0 z-30 h-screen w-full overflow-y-auto"
+          style={{ display: showMenu ? 'block' : 'none', backgroundColor: '#e8edf2' }}
         >
           <InteractiveMenu />
           <ContactSection />
