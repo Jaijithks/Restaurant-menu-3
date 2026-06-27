@@ -126,16 +126,16 @@ export default function InteractiveMenu() {
   }, [selectedCategory, searchQuery]);
 
   return (
-    <section id="menu-section" className="w-full bg-[#f5f8f9] px-6 py-16 sm:px-12">
+    <section id="menu-section" className="w-full px-6 py-16 sm:px-12" style={{ backgroundColor: '#e8edf2' }}>
       <div className="mx-auto max-w-3xl">
         {/* Title Block */}
         <div className="flex flex-col items-center text-center">
-          <h2 className="font-serif text-3xl font-bold tracking-[0.05em] text-[#1c1c1c] sm:text-4xl">
-            OUR EXQUISITE MENU
+          <h2 className="font-serif text-4xl font-bold tracking-[0.04em] text-[#1a1a1a] sm:text-5xl" style={{ fontVariant: 'small-caps' }}>
+            Our Exquisite Menu
           </h2>
-          <div className="my-3 h-[1px] w-12 bg-[#bda27e]" />
-          <p className="max-w-xl font-sans text-xs sm:text-sm leading-relaxed text-[#1c1c1c] font-medium">
-            Sovor our troditionol Yemeni Mondi ond premium chorcool-grilled Al-Fohm, prepored with freshly ground spices.
+          <div className="my-4 h-[1.5px] w-14 bg-[#bda27e]" />
+          <p className="max-w-xl font-sans text-[13px] sm:text-sm leading-relaxed text-[#3a3a3a]">
+            Savor our traditional Yemeni Mandi and premium charcoal-grilled Al-Fahm, prepared with freshly ground spices.
           </p>
         </div>
 
@@ -147,8 +147,8 @@ export default function InteractiveMenu() {
               placeholder="Search for Mandi, Grills, Mojitos..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-full border border-[#dbe1e3] px-6 py-2.5 text-center font-sans text-xs text-[#1c1c1c] placeholder-zinc-400 outline-none focus:border-zinc-300"
-              style={{ backgroundColor: "#eef2f3" }}
+              className="w-full rounded-full border border-[#c8d0d8] px-6 py-2.5 text-center font-sans text-xs text-[#1a1a1a] placeholder-[#8a9aaa] outline-none focus:border-[#bda27e]"
+              style={{ backgroundColor: 'rgba(255,255,255,0.55)' }}
             />
             {searchQuery && (
               <button
@@ -170,10 +170,10 @@ export default function InteractiveMenu() {
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`shrink-0 rounded-full px-5 py-2 font-sans text-xs font-bold tracking-wide transition-all duration-150 border border-[#dbe1e3] ${
+                  className={`shrink-0 rounded-full px-5 py-2 font-sans text-xs font-semibold tracking-wide transition-all duration-150 border ${
                     isActive
-                      ? "bg-[#3cdbc9] text-zinc-950 shadow-[0_0_15px_rgba(60,219,201,0.6)] border-[#3cdbc9]"
-                      : "bg-[#eef2f3] text-zinc-800 hover:bg-zinc-200/50"
+                      ? "bg-[#1a1a1a] text-white border-[#1a1a1a] shadow-md"
+                      : "bg-white/60 text-[#3a3a3a] border-[#c8d0d8] hover:bg-white/90"
                   }`}
                 >
                   {cat}
@@ -193,7 +193,7 @@ export default function InteractiveMenu() {
               >
                 {/* Row 1: Title (left) & Rating/Tag (right) */}
                 <div className="flex items-center justify-between">
-                  <h3 className="font-serif text-[17px] font-bold tracking-wide text-zinc-900 sm:text-[19px] uppercase">
+                <h3 className="font-serif text-[18px] font-bold tracking-wide text-[#1a1a1a] sm:text-[20px]" style={{ fontVariant: 'small-caps' }}>
                     {item.name}
                   </h3>
                   <div className="flex items-center gap-1.5">
@@ -214,7 +214,7 @@ export default function InteractiveMenu() {
 
                 {/* Row 2: Description (left) & Price (right) */}
                 <div className="mt-2 flex items-start justify-between gap-4">
-                  <p className="font-sans text-[13px] leading-relaxed text-zinc-700 max-w-[75%] sm:text-[14px]">
+                  <p className="font-sans text-[13px] leading-relaxed text-[#444] max-w-[75%] sm:text-[14px]">
                     {item.description}
                   </p>
                   <div className="flex flex-col items-end shrink-0 font-sans">

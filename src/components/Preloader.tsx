@@ -3,11 +3,12 @@
 import React, { useEffect, useState } from "react";
 
 interface PreloaderProps {
-  onComplete: (images: HTMLImageElement[]) => void;
+  onComplete: (bitmaps: ImageBitmap[]) => void;
 }
 
 export default function Preloader({ onComplete }: PreloaderProps) {
   const [progress, setProgress] = useState(0);
+  const [statusText, setStatusText] = useState('Crafting the experience...');
   const [fadeAway, setFadeAway] = useState(false);
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         preloadedImages.push(img);
         
         if (loadedCount === totalCount) {
-          // Sort images based on name order to ensure correct frame indexing
+          // Sort by frame index so sequence order is guaranteed
           const sorted = preloadedImages.sort((a, b) => {
             const getIndex = (url: string) => {
               if (url.includes("background_hero") || url.includes("backgroun_hero")) return -1;
@@ -48,14 +49,19 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             };
             return getIndex(a.src) - getIndex(b.src);
           });
-          
-          // Small delay before transition out for user experience
-          setTimeout(() => {
+
+          // Convert all frames to ImageBitmaps (GPU-ready) BEFORE dismissing
+          setStatusText('Preparing graphics...');
+          Promise.all(
+            sorted.map((img) => createImageBitmap(img).catch(() => null))
+          ).then((bitmaps) => {
+            const ready = bitmaps.filter(Boolean) as ImageBitmap[];
+            // Now fade out and hand off — zero decode work left for ScrollAnimation
             setFadeAway(true);
             setTimeout(() => {
-              onComplete(sorted);
-            }, 800); // Duration of fade-out transition
-          }, 600);
+              onComplete(ready);
+            }, 700); // matches fade-out transition duration
+          });
         }
       };
       
@@ -64,12 +70,14 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         loadedCount++;
         setProgress(Math.round((loadedCount / totalCount) * 100));
         if (loadedCount === totalCount) {
-          setTimeout(() => {
+          setStatusText('Preparing graphics...');
+          Promise.all(
+            preloadedImages.map((img) => createImageBitmap(img).catch(() => null))
+          ).then((bitmaps) => {
+            const ready = bitmaps.filter(Boolean) as ImageBitmap[];
             setFadeAway(true);
-            setTimeout(() => {
-              onComplete(preloadedImages);
-            }, 800);
-          }, 600);
+            setTimeout(() => onComplete(ready), 700);
+          });
         }
       };
     };
@@ -126,7 +134,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         </div>
 
         <p className="font-sans text-[11px] tracking-[0.15em] text-zinc-500 uppercase animate-pulse">
-          Crafting the experience...
+          {statusText}
         </p>
       </div>
     </div>

@@ -4,7 +4,7 @@ import React from "react";
 
 export default function ContactSection() {
   return (
-    <section id="contact-section" className="w-full bg-[#f5f8f9] px-6 py-20 sm:px-12 border-t border-zinc-200/60">
+    <section id="contact-section" className="w-full px-6 py-20 sm:px-12 border-t border-[#c8d0d8]/50" style={{ backgroundColor: '#e8edf2' }}>
       <div className="mx-auto max-w-4xl">
         {/* Title */}
         <div className="flex flex-col items-center text-center">

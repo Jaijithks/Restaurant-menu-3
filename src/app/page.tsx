@@ -5,7 +5,7 @@ import Preloader from "@/components/Preloader";
 import ScrollAnimation from "@/components/ScrollAnimation";
 
 export default function Home() {
-  const [loadedImages, setLoadedImages] = useState<HTMLImageElement[] | null>(null);
+  const [loadedImages, setLoadedImages] = useState<ImageBitmap[] | null>(null);
 
   return (
     <main className="min-h-screen w-full flex flex-col">

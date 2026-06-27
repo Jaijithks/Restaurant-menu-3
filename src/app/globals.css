@@ -1,14 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fbf9f4; /* Warm off-white/cream background matching the frame 119 */
-  --foreground: #1c1c1c; /* Charcoal slate for text */
-  --gold: #bda27e;       /* Elegant ochre/gold accent */
+  --background: #fbf9f4;
+  /* Warm off-white/cream background matching the frame 119 */
+  --foreground: #1c1c1c;
+  /* Charcoal slate for text */
+  --gold: #bda27e;
+  /* Elegant ochre/gold accent */
   --gold-dark: #a18663;
   --gold-light: #f5f0e6;
   --card-bg: #ffffff;
   --card-border: rgba(189, 162, 126, 0.15);
-  
+
   --font-serif: var(--font-cormorant);
   --font-sans: var(--font-inter);
 }
@@ -25,7 +28,8 @@
   --font-sans: var(--font-sans);
 }
 
-html, body {
+html,
+body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -35,11 +39,12 @@ html, body {
   scroll-behavior: smooth;
 }
 
-body {
-  overflow-x: hidden;
-}
-
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-serif), serif;
   letter-spacing: 0.03em;
 }
@@ -48,13 +53,16 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar {
   width: 5px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--background);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--gold);
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gold-dark);
 }
@@ -65,6 +73,7 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -74,4 +83,3 @@ h1, h2, h3, h4, h5, h6 {
 .animate-fade-in {
   animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-
