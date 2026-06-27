@@ -10,7 +10,7 @@ export default function ContactSection() {
         {/* Title */}
         <div className="flex flex-col items-center text-center">
           <h2 className="font-serif text-3xl font-bold tracking-[0.05em] text-[#1c1c1c] sm:text-4xl">
-            FIND US
+            Find Us
           </h2>
           <div className="my-3 h-[1px] w-12 bg-[#bda27e]" />
           <p className="max-w-xl font-sans text-xs tracking-[0.15em] text-zinc-500 uppercase">
@@ -33,7 +33,7 @@ export default function ContactSection() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-lg font-bold tracking-wide text-zinc-900 uppercase">
+                <h3 className="font-serif text-lg font-bold tracking-wide text-zinc-900">
                   Hours & Timings
                 </h3>
               </div>
@@ -56,7 +56,7 @@ export default function ContactSection() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-lg font-bold tracking-wide text-zinc-900 uppercase">
+                <h3 className="font-serif text-lg font-bold tracking-wide text-zinc-900">
                   Reservations
                 </h3>
               </div>
@@ -86,7 +86,7 @@ export default function ContactSection() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-lg font-bold tracking-wide text-zinc-900 uppercase">
+                <h3 className="font-serif text-lg font-bold tracking-wide text-zinc-900">
                   Our Address
                 </h3>
               </div>
@@ -113,8 +113,8 @@ export default function ContactSection() {
               {/* Glassmorphic overlay card */}
               <div className="absolute bottom-4 left-4 right-4 bg-white/70 backdrop-blur-md border border-white/20 p-4 rounded-xl shadow-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div className="flex flex-col">
-                  <span className="font-serif text-[13px] font-bold text-zinc-900 tracking-wide uppercase">
-                    OCHRE & EMBER
+                  <span className="font-serif text-[13px] font-bold text-zinc-900 tracking-wide">
+                    Ochre & Ember
                   </span>
                   <span className="font-sans text-[11px] text-zinc-600">
                     Kochi, Kerala
@@ -137,7 +137,7 @@ export default function ContactSection() {
         {/* Footer info (all rights reserved) */}
         <div className="mt-20 flex flex-col items-center pt-8 text-center border-t border-zinc-200/50">
           <h4 className="font-serif text-lg font-light tracking-[0.2em] text-[#bda27e]">
-            OCHRE & EMBER
+            Ochre & Ember
           </h4>
           <p className="mt-4 font-sans text-[10px] tracking-wider text-zinc-400 uppercase">
             © {new Date().getFullYear()} Ochre & Ember. All rights reserved.
