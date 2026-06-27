@@ -193,7 +193,7 @@ export default function InteractiveMenu() {
               >
                 {/* Row 1: Title (left) & Rating/Tag (right) */}
                 <div className="flex items-center justify-between">
-                <h3 className="font-serif text-[18px] font-bold tracking-wide text-[#1a1a1a] sm:text-[20px]" style={{ fontVariant: 'small-caps' }}>
+                  <h3 className="font-serif text-[18px] font-bold tracking-wide text-[#1a1a1a] sm:text-[20px]" style={{ fontVariant: 'small-caps' }}>
                     {item.name}
                   </h3>
                   <div className="flex items-center gap-1.5">

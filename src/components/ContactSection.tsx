@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 export default function ContactSection() {
   return (
@@ -101,10 +102,12 @@ export default function ContactSection() {
           {/* Right Column: Styled Map Card */}
           <div className="relative overflow-hidden rounded-2xl border border-[rgba(189,162,126,0.15)] bg-white p-3 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group min-h-[380px] h-full">
             <div className="relative w-full flex-grow overflow-hidden rounded-xl bg-zinc-950 min-h-[300px]">
-              <img
+              <Image
                 src="/contact-map.png"
                 alt="Ochre & Ember Location Map"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                fill
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
               
               {/* Glassmorphic overlay card */}
