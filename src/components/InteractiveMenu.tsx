@@ -4,7 +4,7 @@ import React, { useState, useMemo } from "react";
 
 interface MenuItem {
   id: string;
-  name: string; // ✅ Standard valid TypeScript type string
+  name: string;
   category: string;
   rating: number;
   tag?: string;
@@ -126,34 +126,37 @@ export default function InteractiveMenu() {
   }, [selectedCategory, searchQuery]);
 
   return (
-    <section id="menu-section" className="w-full bg-[#f5f8f9] px-6 pt-4 pb-16 sm:px-12 sm:pt-8">
-      <div className="mx-auto max-w-5xl">
+    <section id="menu-section" className="w-full px-6 py-16 sm:px-12" style={{ backgroundColor: '#e8edf2' }}>
+      <div className="mx-auto max-w-3xl">
         {/* Title Block */}
         <div className="flex flex-col items-center text-center">
-          <h2 className="font-serif text-6xl font-bold tracking-[0.05em] text-[#1c1c1c] sm:text-4xl">
+          <h2
+            className="font-serif text-4xl font-semibold tracking-[0.04em] text-[#1a1a1a] sm:text-5xl"
+            style={{ fontVariant: 'small-caps' }}
+          >
             Our Exquisite Menu
           </h2>
-          <div className="my-4 h-[1px] w-12 bg-[#bda27e]" />
-          <p className="max-w-2xl font-sans text-base sm:text-lg leading-relaxed text-[#1c1c1c] font-medium">
-            Savour our traditional Yemeni Mandi and premium charcoal-grilled Al-Fahm, prepared with freshly ground spices.
+          <div className="my-3 h-[1.5px] w-14 bg-[#bda27e]" />
+          <p className="max-w-xl font-sans text-[13px] sm:text-sm leading-relaxed text-[#3a3a3a]">
+            Savor our traditional Yemeni Mandi and premium charcoal-grilled Al-Fahm, prepared with freshly ground spices.
           </p>
         </div>
 
         {/* Search Bar */}
-        <div className="mt-8 flex justify-center">
-          <div className="relative w-full max-w-xl">
+        <div className="mt-6 flex justify-center">
+          <div className="relative w-full max-w-md">
             <input
               type="text"
               placeholder="Search for Mandi, Grills, Mojitos..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-full border border-[#dbe1e3] px-8 py-4 text-center font-sans text-base text-[#1c1c1c] placeholder-zinc-400 outline-none focus:border-zinc-300"
-              style={{ backgroundColor: "#eef2f3" }}
+              className="w-full rounded-full border border-[#c8d0d8] px-6 py-2.5 text-center font-sans text-xs text-[#1a1a1a] placeholder-[#8a9aaa] outline-none focus:border-[#bda27e]"
+              style={{ backgroundColor: 'rgba(255,255,255,0.55)' }}
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute top-1/2 right-5 -translate-y-1/2 font-sans text-xs text-zinc-400 hover:text-zinc-600"
+                className="absolute top-1/2 right-4 -translate-y-1/2 font-sans text-[10px] text-zinc-400 hover:text-zinc-600"
               >
                 Clear
               </button>
@@ -162,15 +165,15 @@ export default function InteractiveMenu() {
         </div>
 
         {/* Category Filter Horizontal Scroll */}
-        <div className="no-scrollbar mt-8 overflow-x-auto pb-2">
-          <div className="flex justify-start gap-4 sm:justify-center">
+        <div className="no-scrollbar mt-6 overflow-x-auto pb-2">
+          <div className="flex justify-start gap-3 sm:justify-center">
             {CATEGORIES.map((cat) => {
               const isActive = selectedCategory === cat;
               return (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`shrink-0 rounded-full px-7 py-3 font-sans text-sm sm:text-base font-bold tracking-wide transition-all duration-150 border border-[#dbe1e3] ${
+                  className={`shrink-0 rounded-full px-5 py-2 font-sans text-xs font-semibold tracking-wide transition-all duration-150 border ${
                     isActive
                       ? "bg-[#1a1a1a] text-white border-[#1a1a1a] shadow-md"
                       : "bg-white/60 text-[#3a3a3a] border-[#c8d0d8] hover:bg-white/90"
@@ -189,24 +192,25 @@ export default function InteractiveMenu() {
             filteredItems.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col border-b border-zinc-200/70 py-8 font-sans"
+                className="flex flex-col border-b border-zinc-200/70 py-6 font-sans"
               >
                 {/* Row 1: Title (left) & Rating/Tag (right) */}
                 <div className="flex items-center justify-between">
-                  {/* Removed lowercase class */}
-                  <h3 className="font-serif text-2xl font-bold tracking-wide text-zinc-900 sm:text-3xl">
+                  <h3
+                    className="font-serif text-[18px] font-semibold tracking-wide text-[#1a1a1a] sm:text-[20px]"
+                    style={{ fontVariant: 'small-caps' }}
+                  >
                     {item.name}
                   </h3>
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-1.5">
                     {/* Rating badge */}
-                    <div className="flex items-center gap-1.5 rounded border border-[#cbd5e1] bg-white px-3 py-1 font-sans text-sm font-bold text-zinc-700">
-                      <span className="text-[#d4af37] text-base">★</span>
+                    <div className="flex items-center gap-1 rounded border border-[#cbd5e1] bg-white px-2 py-0.5 font-sans text-[10px] font-bold text-zinc-700">
+                      <span className="text-[#d4af37] text-[11px]">★</span>
                       <span>{item.rating}</span>
                     </div>
-
                     {/* Tag badge (Best Seller / Chef's Special) */}
                     {item.tag && (
-                      <span className="rounded bg-[#d4af37] px-3 py-1 font-sans text-xs font-bold tracking-wider text-zinc-950 uppercase">
+                      <span className="rounded bg-[#d4af37] px-2 py-0.5 font-sans text-[9px] font-bold tracking-wider text-zinc-950 uppercase">
                         {item.tag}
                       </span>
                     )}
@@ -214,15 +218,15 @@ export default function InteractiveMenu() {
                 </div>
 
                 {/* Row 2: Description (left) & Price (right) */}
-                <div className="mt-3 flex items-start justify-between gap-4">
-                  <p className="font-sans text-base leading-relaxed text-zinc-700 max-w-[75%] sm:text-lg">
+                <div className="mt-2 flex items-start justify-between gap-4">
+                  <p className="font-sans text-[13px] leading-relaxed text-[#444] max-w-[75%] sm:text-[14px]">
                     {item.description}
                   </p>
                   <div className="flex flex-col items-end shrink-0 font-sans">
-                    <span className="text-xs font-bold tracking-widest text-zinc-400 uppercase">
+                    <span className="text-[9px] font-bold tracking-widest text-zinc-400 uppercase">
                       PRICE
                     </span>
-                    <span className="text-xl font-bold text-zinc-900 mt-0.5">
+                    <span className="text-[20px] font-bold text-zinc-900 leading-tight">
                       ₹{item.price}
                     </span>
                   </div>

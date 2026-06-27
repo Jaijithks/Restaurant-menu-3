@@ -14,18 +14,16 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   useEffect(() => {
     const totalFrames = 120;
     
-    // Detect mobile/tablet screen on load (using 1024px breakpoint)
-    const isMobile = typeof window !== "undefined" && window.innerWidth <= 1024;
+    // Detect mobile screen on load (768px breakpoint)
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
     const sequenceFolder = isMobile ? encodeURIComponent("sequence 2") : "sequence";
     const heroImage = isMobile ? "/backgroun_hero_2.webp" : "/background_hero.jpeg";
     
     const paths: string[] = [heroImage];
     
-    // Generate sequence paths: skip alternate frames (load 50%)
-    for (let i = 0; i < totalFrames; i += 2) {
-      const frameIndex = i;
-      if (frameIndex >= totalFrames) break;
-      const paddedNum = String(frameIndex).padStart(3, "0");
+    // Load ALL 120 sequence frames (000.webp to 119.webp)
+    for (let i = 0; i < totalFrames; i++) {
+      const paddedNum = String(i).padStart(3, "0");
       paths.push(`/${sequenceFolder}/${paddedNum}.webp`);
     }
 
