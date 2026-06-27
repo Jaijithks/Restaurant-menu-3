@@ -124,10 +124,10 @@ export default function ScrollAnimation({ images }: ScrollAnimationProps) {
                 Welcome to
               </span>
               <h1 className="mt-4 font-serif text-[52px] font-extralight tracking-[0.2em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] md:text-[76px]">
-                Ochre & Ember
+                OCHRE &amp; EMBER
               </h1>
               <p className="mt-6 max-w-sm font-sans text-xs tracking-widest text-zinc-300 uppercase sm:text-sm">
-                Authentic Yemeni Mandi &amp; Premium Grills
+                Authentic Yemeni Mandi & Premium Grills
               </p>
               <div className="mt-8 h-[1px] w-20 bg-gold" />
             </div>
