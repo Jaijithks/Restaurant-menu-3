@@ -4,7 +4,7 @@ import React, { useState, useMemo } from "react";
 
 interface MenuItem {
   id: string;
-  name: string; // ✅ Standard valid TypeScript type string
+  name: string;
   category: string;
   rating: number;
   tag?: string;
@@ -126,7 +126,7 @@ export default function InteractiveMenu() {
   }, [selectedCategory, searchQuery]);
 
   return (
-    <section id="menu-section" className="w-full bg-[#f5f8f9] px-6 pt-4 pb-16 sm:px-12 sm:pt-8">
+    <section id="menu-section" className="w-full px-6 pt-4 pb-16 sm:px-12 sm:pt-8" style={{ backgroundColor: '#e8edf2' }}>
       <div className="mx-auto max-w-5xl">
         {/* Title Block */}
         <div className="flex flex-col items-center text-center">
@@ -192,7 +192,7 @@ export default function InteractiveMenu() {
               >
                 {/* Row 1: Title (left) & Rating/Tag (right) */}
                 <div className="flex items-center justify-between">
-                  <h3 className="font-serif text-[18px] font-bold tracking-wide text-[#1a1a1a] sm:text-[20px]" style={{ fontVariant: 'small-caps' }}>
+                  <h3 className="font-serif text-2xl font-bold tracking-wide text-zinc-900 sm:text-3xl" style={{ fontVariant: 'small-caps' }}>
                     {item.name}
                   </h3>
                   <div className="flex items-center gap-2.5">
